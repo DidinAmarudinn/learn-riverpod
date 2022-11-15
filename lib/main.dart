@@ -1,7 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final counterProvider = StateProvider((ref) => 0);
+abstract class WebsocketClient {
+  Stream<int> getCounterStream([int start]);
+}
+
+class FakeWebsocketClient implements WebsocketClient {
+  @override
+  Stream<int> getCounterStream([int start = 0]) async* {
+    int i = start;
+    while (true) {
+      yield i++;
+      await Future.delayed(const Duration(milliseconds: 500));
+    }
+  }
+}
+
+final websSocketProvider = Provider<WebsocketClient>((ref) {
+  return FakeWebsocketClient();
+});
+
+final counterProvider = StreamProvider.family<int, int>((ref, start) {
+  final wsClient = ref.watch(websSocketProvider);
+  return wsClient.getCounterStream(start);
+});
+
 void main() {
   runApp(
     const ProviderScope(
@@ -60,54 +83,19 @@ class CounterPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final int counter = ref.watch(counterProvider);
-
-    ref.listen(
-      counterProvider,
-      (previous, next) {
-        if (next >= 5) {
-          showDialog(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                title: const Text('Warning'),
-                content: const Text(
-                    'Counter dangerously high. Consider resetting it.'),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text('OK'),
-                  )
-                ],
-              );
-            },
-          );
-        }
-      },
-    );
-
+    final AsyncValue<int> counter = ref.watch(counterProvider(5));
     return Scaffold(
       appBar: AppBar(
         title: const Text("Counter"),
-        actions: [
-          IconButton(
-              onPressed: () {
-                ref.invalidate(counterProvider);
-              },
-              icon: const Icon(Icons.refresh))
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          ref.read(counterProvider.notifier).state++;
-        },
-        child: const Icon(Icons.add),
       ),
       body: Center(
         child: Text(
-          counter.toString(),
+          counter
+              .when(
+                  data: (int value) => value,
+                  error: (Object e, _) => e,
+                  loading: () => 5)
+              .toString(),
           style: Theme.of(context).textTheme.displayMedium,
         ),
       ),
