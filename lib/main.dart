@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:journal_riverpod/http_riverpod/view/user_list_screen.dart';
 
 abstract class WebsocketClient {
   Stream<int> getCounterStream([int start]);
@@ -48,7 +49,7 @@ class MyApp extends StatelessWidget {
         brightness: Brightness.dark,
         surface: const Color(0xFF003909),
       )),
-      home: const HomePage(),
+      home: const UserListScreen(),
     );
   }
 }
