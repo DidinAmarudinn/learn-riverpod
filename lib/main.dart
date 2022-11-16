@@ -46,8 +46,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(
         seedColor: Colors.purple,
-        brightness: Brightness.dark,
-        surface: const Color(0xFF003909),
+        brightness: Brightness.light,
+        surface: const Color.fromARGB(255, 238, 36, 53),
       )),
       home: const UserListScreen(),
     );
