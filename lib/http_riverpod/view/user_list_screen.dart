@@ -18,8 +18,42 @@ class UserListScreen extends ConsumerWidget {
               itemCount: val.length,
               itemBuilder: (context, index) {
                 var user = val[index];
-                return ListTile(
-                  title: Text(user.firstName ?? ""),
+                return Container(
+                  padding: const EdgeInsets.all(12),
+                  margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.05),
+                        offset: const Offset(0, 4),
+                        blurRadius: 40,
+                        spreadRadius: 2,
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(15),
+                            child: Image.network(
+                              user.avatar ?? "",
+                              width: 30,
+                              height: 30,
+                            ),
+                          ),
+                          const SizedBox(width: 12,),
+                          Text(user.firstName ?? "")
+                        ],
+                      ),
+                      const SizedBox(height: 12,),
+                      Text(user.email ?? "")
+                    ],
+                  ),
                 );
               });
         },
