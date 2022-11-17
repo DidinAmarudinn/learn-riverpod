@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:journal_riverpod/http_riverpod/view/user_list_screen.dart';
+import 'package:journal_riverpod/reddit_clone/theme/theme.dart';
 
 abstract class WebsocketClient {
   Stream<int> getCounterStream([int start]);
@@ -41,14 +42,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Counter App',
+      title: 'RiverPod App',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(
-        seedColor: Colors.purple,
-        brightness: Brightness.light,
-        surface: const Color.fromARGB(255, 238, 36, 53),
-      )),
+      theme:ThemeConfig.darkModeAppTheme,
       home: const UserListScreen(),
     );
   }
