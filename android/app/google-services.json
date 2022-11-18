@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "110858778461",
+    "project_id": "reddit-clone-d9bf2",
+    "storage_bucket": "reddit-clone-d9bf2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:110858778461:android:b2fd5c8226da2bc2065ab4",
+        "android_client_info": {
+          "package_name": "com.example.journal_riverpod"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "110858778461-dd645n066p1thed04jn3k2gnflj5ur56.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.journal_riverpod",
+            "certificate_hash": "b0963b73833261ae7c22ae21d7e31ff29342bc14"
+          }
+        },
+        {
+          "client_id": "110858778461-rib6kosd4sb492eo3dr1ql7caqi8dgo4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA90DxRl_BzT6mbyk4mbofUVJhoylVl96Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "110858778461-rib6kosd4sb492eo3dr1ql7caqi8dgo4.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "110858778461-3m208fpp8rb2s51jlaak1ml3d1c91h20.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.journalRiverpod"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
