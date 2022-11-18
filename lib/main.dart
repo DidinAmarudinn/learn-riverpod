@@ -1,6 +1,8 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:journal_riverpod/http_riverpod/view/user_list_screen.dart';
+import 'package:journal_riverpod/firebase_options.dart';
+import 'package:journal_riverpod/reddit_clone/features/auth/screens/login_screen.dart';
 import 'package:journal_riverpod/reddit_clone/theme/theme.dart';
 
 abstract class WebsocketClient {
@@ -27,7 +29,11 @@ final counterProvider = StreamProvider.family<int, int>((ref, start) {
   return wsClient.getCounterStream(start);
 });
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(
     const ProviderScope(
       child: MyApp(),
@@ -44,8 +50,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'RiverPod App',
       debugShowCheckedModeBanner: false,
-      theme:ThemeConfig.darkModeAppTheme,
-      home: const UserListScreen(),
+      theme: ThemeConfig.darkModeAppTheme,
+      home: const LoginScreen(),
     );
   }
 }
