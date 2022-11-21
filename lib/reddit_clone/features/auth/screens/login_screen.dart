@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:journal_riverpod/reddit_clone/theme/theme.dart';
 import 'package:journal_riverpod/reddit_clone/utils/image_constants.dart';
 import 'package:journal_riverpod/reddit_clone/utils/style.dart';
+import 'package:journal_riverpod/reddit_clone/widget/google_signin_button.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -49,32 +49,9 @@ class LoginScreen extends StatelessWidget {
             height: 300,
             width: double.infinity,
           ),
-          Padding(
-            padding: const EdgeInsets.all(kPading),
-            child: ElevatedButton.icon(
-              onPressed: () {},
-              icon: Image.asset(
-                icGoogle,
-                width: 34,
-              ),
-              label: const Text(
-                "Continue with Google",
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: ThemeConfig.greyColor,
-                  minimumSize: const Size(
-                    double.infinity,
-                    50,
-                  ),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(
-                    25,
-                  ))),
-            ),
+          const Padding(
+            padding: EdgeInsets.all(kPading),
+            child: GoogleSignInButton(),
           ),
           const Spacer(),
         ],
