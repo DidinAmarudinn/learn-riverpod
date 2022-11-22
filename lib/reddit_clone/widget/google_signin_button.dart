@@ -8,14 +8,14 @@ import '../utils/image_constants.dart';
 class GoogleSignInButton extends ConsumerWidget {
   const GoogleSignInButton({super.key});
 
-  void googleSignin(WidgetRef ref) {
-    ref.read(authControllerProvider).signInWithGoogle();
+  void googleSignin(BuildContext context, WidgetRef ref) {
+    ref.read(authControllerProvider).signInWithGoogle(context);
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return ElevatedButton.icon(
-      onPressed: () => googleSignin(ref),
+      onPressed: () => googleSignin(context, ref),
       icon: Image.asset(
         icGoogle,
         width: 34,
