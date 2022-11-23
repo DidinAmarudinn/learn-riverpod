@@ -1,9 +1,15 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:journal_riverpod/firebase_options.dart';
-import 'package:journal_riverpod/reddit_clone/features/auth/screens/login_screen.dart';
+import 'package:journal_riverpod/reddit_clone/features/auth/controller/auth_controller.dart';
+import 'package:journal_riverpod/reddit_clone/models/user_model.dart';
 import 'package:journal_riverpod/reddit_clone/theme/theme.dart';
+import 'package:journal_riverpod/reddit_clone/widget/error_text.dart';
+import 'package:journal_riverpod/reddit_clone/widget/loading_widget.dart';
+import 'package:journal_riverpod/router.dart';
+import 'package:routemaster/routemaster.dart';
 
 abstract class WebsocketClient {
   Stream<int> getCounterStream([int start]);
@@ -41,18 +47,50 @@ void main() async {
   );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends ConsumerStatefulWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() => _MyAppState();
+}
+
+class _MyAppState extends ConsumerState<MyApp> {
+  UserModel? userModel;
+
+  void getData(WidgetRef ref, User data) async {
+    userModel = await ref
+        .watch(authControllerProvider.notifier)
+        .getUserData(data.uid)
+        .first;
+    ref.read(userProvider.notifier).update((state) => userModel);
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'RiverPod App',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeConfig.darkModeAppTheme,
-      home: const LoginScreen(),
-    );
+    return ref.watch(authStateChangeProvider).when(
+          data: (data) {
+            return MaterialApp.router(
+              title: 'RiverPod App',
+              debugShowCheckedModeBanner: false,
+              theme: ThemeConfig.darkModeAppTheme,
+              routerDelegate: RoutemasterDelegate(routesBuilder: (context) {
+                if (data != null) {
+                  getData(ref, data);
+                  if (userModel!=null) {
+                    return loginRoutes;
+                  }
+                }
+                return logoutRoutes;
+              }),
+              routeInformationParser: const RoutemasterParser(),
+            );
+          },
+          error: (error, stacktrace) {
+            return ErrorText(error: error.toString());
+          },
+          loading: () => const LoadingWidget(),
+        );
   }
 }
 

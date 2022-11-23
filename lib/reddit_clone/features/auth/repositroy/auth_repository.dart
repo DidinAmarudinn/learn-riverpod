@@ -1,4 +1,3 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -26,6 +25,8 @@ class AuthRepository {
   CollectionReference get _user =>
       _firestore.collection(FirebaseConstants.userCollection);
 
+  Stream<User?> get authStateChange => _auth.authStateChanges();
+
   FutureEither<UserModel> signInWithGoogle() async {
     try {
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
@@ -47,7 +48,7 @@ class AuthRepository {
         );
         await _user.doc(userCredential.user?.uid ?? "").set(userModel.toMap());
       } else {
-       userModel = await getUserData(userCredential.user?.uid ?? "").first;
+        userModel = await getUserData(userCredential.user?.uid ?? "").first;
       }
       return right(userModel);
     } on FirebaseException catch (e) {
@@ -56,8 +57,10 @@ class AuthRepository {
       return left(Failure(message: e.toString()));
     }
   }
+
   Stream<UserModel> getUserData(String uid) {
-    return _user.doc(uid).snapshots().map((event) => UserModel.fromMap(event.data() as Map<String, dynamic>));
+    return _user.doc(uid).snapshots().map(
+        (event) => UserModel.fromMap(event.data() as Map<String, dynamic>));
   }
 }
 

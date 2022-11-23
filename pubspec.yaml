@@ -39,6 +39,7 @@ dependencies:
   flutter_riverpod: ^2.1.1
   fpdart: ^0.3.0
   google_sign_in: ^5.4.2
+  routemaster: ^1.0.1
   http: ^0.13.5
 
 dev_dependencies:
