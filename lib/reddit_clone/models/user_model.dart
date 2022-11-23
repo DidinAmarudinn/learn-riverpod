@@ -41,7 +41,7 @@ class UserModel {
   Map<String, dynamic> toMap() {
     return {
       'name': name,
-      'profilePic': profilePic,
+      'profilePict': profilePic,
       'banner': banner,
       'uid': uid,
       'isAuthenticated': isAuthenticated,
@@ -53,7 +53,7 @@ class UserModel {
   factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
       name: map['name'] ?? '',
-      profilePic: map['profilePic'] ?? '',
+      profilePic: map['profilePict'] ?? '',
       banner: map['banner'] ?? '',
       uid: map['uid'] ?? '',
       isAuthenticated: map['isAuthenticated'] ?? false,
