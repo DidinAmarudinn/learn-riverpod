@@ -1,90 +1,114 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:journal_riverpod/reddit_clone/core/utils.dart';
+import 'package:journal_riverpod/reddit_clone/features/auth/controller/auth_controller.dart';
 import 'package:journal_riverpod/reddit_clone/features/community/controller/community_controller.dart';
 import 'package:journal_riverpod/reddit_clone/utils/style.dart';
+import 'package:journal_riverpod/reddit_clone/widget/error_text.dart';
 import 'package:journal_riverpod/reddit_clone/widget/loading_widget.dart';
 
-class CreateCommunityScreen extends ConsumerStatefulWidget {
-  static const routeName = "/create-community-screen";
-  const CreateCommunityScreen({super.key});
+class CommunityScreen extends ConsumerWidget {
+  final String name;
+  const CommunityScreen({
+    super.key,
+    required this.name,
+  });
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() =>
-      _CreateCommunityScreenState();
-}
-
-class _CreateCommunityScreenState extends ConsumerState<CreateCommunityScreen> {
-  final communityNameController = TextEditingController();
-
-  @override
-  void dispose() {
-    communityNameController.dispose();
-    super.dispose();
-  }
-
-  void createCommuntiy() {
-    ref.read(communityControllerProvider.notifier).createCommunity(
-          communityNameController.text.trim(),
-          context,
-        );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final loading = ref.watch(communityControllerProvider.notifier).state;
+  Widget build(BuildContext context, WidgetRef ref) {
+    final user = ref.watch(userProvider);
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Create Community"),
-      ),
-      body: loading
-          ? const LoadingWidget()
-          : Padding(
-              padding: const EdgeInsets.all(kPading),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text("Community name"),
-                  const SizedBox(
-                    height: kPading / 2,
-                  ),
-                  TextField(
-                    controller: communityNameController,
-                    decoration: const InputDecoration(
-                      hintText: "r/Community_name",
-                      filled: true,
-                      border: InputBorder.none,
-                      contentPadding: EdgeInsets.all(kPading / 2),
-                    ),
-                    maxLength: 21,
-                  ),
-                  const SizedBox(
-                    height: kPading,
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      if (communityNameController.text.isNotEmpty) {
-                        createCommuntiy();
-                      } else {
-                        showSnackBar(context, "Please fill community name");
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      minimumSize: const Size(double.infinity, 50),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(
-                          25,
+      body: ref.watch(getCommunityByNameProvider(name)).when(data: (community) {
+        return NestedScrollView(
+            headerSliverBuilder: ((context, innerBoxIsScrolled) {
+              return [
+                SliverAppBar(
+                  expandedHeight: 150,
+                  floating: true,
+                  snap: true,
+                  flexibleSpace: Stack(
+                    children: [
+                      Positioned.fill(
+                        child: Image.network(
+                          community.banner,
+                          fit: BoxFit.cover,
                         ),
                       ),
-                    ),
-                    child: const Text(
-                      "Create Community",
-                      style: TextStyle(fontSize: 16),
+                    ],
+                  ),
+                ),
+                SliverPadding(
+                  padding: const EdgeInsets.all(kPading),
+                  sliver: SliverList(
+                    delegate: SliverChildListDelegate(
+                      [
+                        Align(
+                          alignment: Alignment.topLeft,
+                          child: CircleAvatar(
+                            backgroundImage: NetworkImage(community.avatar),
+                            radius: 35,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: kPading / 2,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "r/${community.name}",
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            community.mods.contains(user?.uid)
+                                ? OutlinedButton(
+                                    onPressed: () {},
+                                    style: ElevatedButton.styleFrom(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                        ),
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: kPading)),
+                                    child: const Text(
+                                      "Mod Tools",
+                                    ),
+                                  )
+                                : OutlinedButton(
+                                    onPressed: () {},
+                                    style: ElevatedButton.styleFrom(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                        ),
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: kPading)),
+                                    child:  Text(
+                                    community.members.contains(user?.uid)?  "Joined" : "Join",
+                                    ),
+                                  )
+                          ],
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            top: kPading,
+                          ),
+                          child: Text("${community.members.length} Members"),
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
-            ),
+                ),
+              ];
+            }),
+            body: Container());
+      }, error: (err, stacktrace) {
+        return ErrorText(error: err.toString());
+      }, loading: () {
+        return const LoadingWidget();
+      }),
     );
   }
 }

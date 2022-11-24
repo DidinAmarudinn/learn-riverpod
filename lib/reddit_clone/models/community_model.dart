@@ -1,7 +1,6 @@
 
 import 'package:flutter/foundation.dart';
 
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 class Community {
   final String id;
   final String name;
@@ -17,8 +16,6 @@ class Community {
     required this.members,
     required this.mods,
   });
-
-  
 
   Community copyWith({
     String? id,
@@ -39,7 +36,7 @@ class Community {
   }
 
   Map<String, dynamic> toMap() {
-    return <String, dynamic>{
+    return {
       'id': id,
       'name': name,
       'banner': banner,
@@ -51,12 +48,12 @@ class Community {
 
   factory Community.fromMap(Map<String, dynamic> map) {
     return Community(
-      id: map['id'] as String,
-      name: map['name'] as String,
-      banner: map['banner'] as String,
-      avatar: map['avatar'] as String,
-      members: List<String>.from((map['members'] as List<String>)),
-      mods: List<String>.from((map['mods'] as List<String>)),
+      id: map['id'] ?? '',
+      name: map['name'] ?? '',
+      banner: map['banner'] ?? '',
+      avatar: map['avatar'] ?? '',
+      members: List<String>.from(map['members']),
+      mods: List<String>.from(map['mods']),
     );
   }
 
@@ -66,25 +63,20 @@ class Community {
   }
 
   @override
-  bool operator ==(covariant Community other) {
+  bool operator ==(Object other) {
     if (identical(this, other)) return true;
-  
-    return 
-      other.id == id &&
-      other.name == name &&
-      other.banner == banner &&
-      other.avatar == avatar &&
-      listEquals(other.members, members) &&
-      listEquals(other.mods, mods);
+
+    return other is Community &&
+        other.id == id &&
+        other.name == name &&
+        other.banner == banner &&
+        other.avatar == avatar &&
+        listEquals(other.members, members) &&
+        listEquals(other.mods, mods);
   }
 
   @override
   int get hashCode {
-    return id.hashCode ^
-      name.hashCode ^
-      banner.hashCode ^
-      avatar.hashCode ^
-      members.hashCode ^
-      mods.hashCode;
+    return id.hashCode ^ name.hashCode ^ banner.hashCode ^ avatar.hashCode ^ members.hashCode ^ mods.hashCode;
   }
 }
