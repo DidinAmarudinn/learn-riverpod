@@ -6,6 +6,7 @@ import 'package:journal_riverpod/reddit_clone/features/community/controller/comm
 import 'package:journal_riverpod/reddit_clone/utils/style.dart';
 import 'package:journal_riverpod/reddit_clone/widget/error_text.dart';
 import 'package:journal_riverpod/reddit_clone/widget/loading_widget.dart';
+import 'package:routemaster/routemaster.dart';
 
 class CommunityScreen extends ConsumerWidget {
   final String name;
@@ -13,7 +14,9 @@ class CommunityScreen extends ConsumerWidget {
     super.key,
     required this.name,
   });
-
+void navigateToModTools(BuildContext context) {
+    Routemaster.of(context).push('/mod-tools/$name');
+  }
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(userProvider);
@@ -64,7 +67,9 @@ class CommunityScreen extends ConsumerWidget {
                             ),
                             community.mods.contains(user?.uid)
                                 ? OutlinedButton(
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      navigateToModTools(context);
+                                    },
                                     style: ElevatedButton.styleFrom(
                                         shape: RoundedRectangleBorder(
                                           borderRadius:
@@ -85,8 +90,10 @@ class CommunityScreen extends ConsumerWidget {
                                         ),
                                         padding: const EdgeInsets.symmetric(
                                             horizontal: kPading)),
-                                    child:  Text(
-                                    community.members.contains(user?.uid)?  "Joined" : "Join",
+                                    child: Text(
+                                      community.members.contains(user?.uid)
+                                          ? "Joined"
+                                          : "Join",
                                     ),
                                   )
                           ],
