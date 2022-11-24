@@ -12,7 +12,7 @@ final authProvider = Provider<FirebaseAuth>((ref) {
   return FirebaseAuth.instance;
 });
 
-final storeageProvider = Provider<FirebaseStorage>((ref) {
+final storageProvider = Provider<FirebaseStorage>((ref) {
   return FirebaseStorage.instance;
 });
 
