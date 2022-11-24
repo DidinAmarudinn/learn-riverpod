@@ -31,6 +31,8 @@ environment:
 dependencies:
   cloud_firestore: ^4.1.0
   cupertino_icons: ^1.0.2
+  dotted_border: ^2.0.0+3
+  file_picker: ^5.2.2
   firebase_auth: ^4.1.3
   firebase_core: ^2.3.0
   firebase_storage: ^11.0.6
@@ -39,8 +41,8 @@ dependencies:
   flutter_riverpod: ^2.1.1
   fpdart: ^0.3.0
   google_sign_in: ^5.4.2
-  routemaster: ^1.0.1
   http: ^0.13.5
+  routemaster: ^1.0.1
 
 dev_dependencies:
   flutter_lints: ^2.0.0
