@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:journal_riverpod/reddit_clone/core/utils.dart';
 import 'package:journal_riverpod/reddit_clone/features/community/controller/community_controller.dart';
+import 'package:journal_riverpod/reddit_clone/models/community_model.dart';
 import 'package:journal_riverpod/reddit_clone/theme/theme.dart';
 import 'package:journal_riverpod/reddit_clone/utils/image_constants.dart';
 import 'package:journal_riverpod/reddit_clone/utils/style.dart';
@@ -25,6 +26,7 @@ class EditCommunityScreen extends ConsumerStatefulWidget {
 
 class _EditCommunityScreenState extends ConsumerState<EditCommunityScreen> {
   File? bannerFile;
+  File? profileFile;
 
   void selectBannerImage() async {
     final res = await pickImage();
@@ -34,8 +36,25 @@ class _EditCommunityScreenState extends ConsumerState<EditCommunityScreen> {
     }
   }
 
+  void selectProfileImage() async {
+    final res = await pickImage();
+    if (res != null) {
+      profileFile = File(res.files.first.path!);
+      setState(() {});
+    }
+  }
+
+  void save(Community community) {
+    ref.read(communityControllerProvider.notifier).editCommunity(
+        profileFile: profileFile,
+        bannerFile: bannerFile,
+        community: community,
+        context: context);
+  }
+
   @override
   Widget build(BuildContext context) {
+    final isLoading = ref.watch(communityControllerProvider);
     return ref.watch(getCommunityByNameProvider(widget.name)).when(
         data: (community) {
       return Scaffold(
@@ -45,12 +64,15 @@ class _EditCommunityScreenState extends ConsumerState<EditCommunityScreen> {
           centerTitle: false,
           actions: [
             TextButton(
-              onPressed: () {},
+              onPressed: (){
+
+                save(community);
+              },
               child: const Text("Save"),
             ),
           ],
         ),
-        body: Padding(
+        body:isLoading? const LoadingWidget(): Padding(
           padding: const EdgeInsets.all(kPading / 2),
           child: Column(
             children: [
@@ -73,7 +95,10 @@ class _EditCommunityScreenState extends ConsumerState<EditCommunityScreen> {
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10)),
                           child: bannerFile != null
-                              ? Image.file(bannerFile!, fit: BoxFit.cover,)
+                              ? Image.file(
+                                  bannerFile!,
+                                  fit: BoxFit.cover,
+                                )
                               : community.banner.isEmpty ||
                                       community.banner == bannerDefault
                                   ? const Center(
@@ -89,9 +114,17 @@ class _EditCommunityScreenState extends ConsumerState<EditCommunityScreen> {
                     Positioned(
                       bottom: 20,
                       left: 20,
-                      child: CircleAvatar(
-                        radius: 32,
-                        backgroundImage: NetworkImage(community.avatar),
+                      child: GestureDetector(
+                        onTap: selectProfileImage,
+                        child: profileFile != null
+                            ? CircleAvatar(
+                                radius: 32,
+                                backgroundImage: FileImage(profileFile!),
+                              )
+                            : CircleAvatar(
+                                radius: 32,
+                                backgroundImage: NetworkImage(community.avatar),
+                              ),
                       ),
                     )
                   ],
