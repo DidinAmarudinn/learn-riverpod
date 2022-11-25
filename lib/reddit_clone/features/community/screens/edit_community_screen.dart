@@ -107,7 +107,7 @@ class _EditCommunityScreenState extends ConsumerState<EditCommunityScreen> {
                                         size: 40,
                                       ),
                                     )
-                                  : Image.network(community.banner),
+                                  : Image.network(community.banner, fit: BoxFit.cover,),
                         ),
                       ),
                     ),

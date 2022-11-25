@@ -50,6 +50,17 @@ class CommunityRepository {
       return Left(Failure(message: e.toString()));
     }
   }
+FutureVoid addMods(String communityName, List<String> uids) async {
+    try {
+      return right(_communities.doc(communityName).update({
+        "mods": uids,
+      }));
+    } on FirebaseException catch (e) {
+      throw e.message.toString();
+    } catch (e) {
+      return left(Failure(message: e.toString()));
+    }
+  }
 
   Stream<List<Community>> getUserCommunities(String uid) {
     return _communities
