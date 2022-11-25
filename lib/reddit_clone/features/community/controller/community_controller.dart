@@ -110,7 +110,7 @@ final communityControllerProvider =
   );
 });
 
-final userCommunitiesProvider = StreamProvider((ref) {
+final userCommunitiesProvider = StreamProvider.autoDispose((ref) {
   final communityController = ref.watch(communityControllerProvider.notifier);
   return communityController.getUserCommunities();
 });
@@ -120,7 +120,7 @@ final searchCommunitiesProvider = StreamProvider.family((ref, String query) {
   return communityController.searchCommunity(query);
 });
 
-final getCommunityByNameProvider = StreamProvider.family((ref, String name) {
+final getCommunityByNameProvider = StreamProvider.family.autoDispose((ref, String name) {
   final communityController = ref.watch(communityControllerProvider.notifier);
   return communityController.getCommunityByName(name);
 });
