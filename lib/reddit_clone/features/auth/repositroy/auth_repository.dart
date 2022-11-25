@@ -58,6 +58,11 @@ class AuthRepository {
     }
   }
 
+  void logout() async {
+   await _googleSignIn.signOut();
+   await _auth.signOut();
+  }
+
   Stream<UserModel> getUserData(String uid) {
     return _user.doc(uid).snapshots().map(
         (event) => UserModel.fromMap(event.data() as Map<String, dynamic>));

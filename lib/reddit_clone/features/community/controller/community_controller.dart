@@ -56,6 +56,7 @@ class CommunityController extends StateNotifier<bool> {
   Stream<List<Community>> searchCommunity(String query) {
     return _repository.searchCommunity(query);
   }
+
   void editCommunity({
     required File? profileFile,
     required File? bannerFile,
@@ -85,7 +86,7 @@ class CommunityController extends StateNotifier<bool> {
       res.fold((l) {
         showSnackBar(context, l.message);
       }, (url) {
-       community = community.copyWith(banner: url);
+        community = community.copyWith(banner: url);
       });
     }
     final result = await _repository.editCommunity(community);
@@ -96,7 +97,26 @@ class CommunityController extends StateNotifier<bool> {
     });
   }
 
+  void joinCommunity(Community community, BuildContext context) async {
+    final user = _ref.read(userProvider);
+    if (user?.uid != null) {
+      final result = await _repository.joinCommunity(community.name, user!.uid);
+      result.fold((l) => showSnackBar(context, l.message), (r) {
+        showSnackBar(context, "Success join community");
+      });
+    }
+  }
 
+  void leaveCommunity(Community community, BuildContext context) async {
+    final user = _ref.read(userProvider);
+    if (user?.uid != null) {
+      final result =
+          await _repository.leaveCommunity(community.name, user!.uid);
+      result.fold((l) => showSnackBar(context, l.message), (r) {
+        showSnackBar(context, "Success leave community");
+      });
+    }
+  }
 }
 
 final communityControllerProvider =
@@ -120,7 +140,8 @@ final searchCommunitiesProvider = StreamProvider.family((ref, String query) {
   return communityController.searchCommunity(query);
 });
 
-final getCommunityByNameProvider = StreamProvider.family.autoDispose((ref, String name) {
+final getCommunityByNameProvider =
+    StreamProvider.family.autoDispose((ref, String name) {
   final communityController = ref.watch(communityControllerProvider.notifier);
   return communityController.getCommunityByName(name);
 });
