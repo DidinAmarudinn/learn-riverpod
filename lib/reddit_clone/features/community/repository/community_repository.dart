@@ -19,9 +19,33 @@ class CommunityRepository {
       if (communityDoc.exists) {
         throw "Community with same name already exsist";
       }
-      return Right(_communities.doc(community.name).set(community.toMap()));
+      return right(_communities.doc(community.name).set(community.toMap()));
     } on FirebaseException catch (e) {
-      return Left(Failure(message: e.message ?? ""));
+      return left(Failure(message: e.message ?? ""));
+    } catch (e) {
+      return left(Failure(message: e.toString()));
+    }
+  }
+
+  FutureVoid joinCommunity(String communityName, String userId) async {
+    try {
+      return right(_communities.doc(communityName).update({
+        "members": FieldValue.arrayUnion([userId])
+      }));
+    } on FirebaseException catch (e) {
+      throw e.message.toString();
+    } catch (e) {
+      return Left(Failure(message: e.toString()));
+    }
+  }
+
+    FutureVoid leaveCommunity(String communityName, String userId) async {
+    try {
+      return right(_communities.doc(communityName).update({
+        "members": FieldValue.arrayRemove([userId])
+      }));
+    } on FirebaseException catch (e) {
+      throw e.message.toString();
     } catch (e) {
       return Left(Failure(message: e.toString()));
     }
