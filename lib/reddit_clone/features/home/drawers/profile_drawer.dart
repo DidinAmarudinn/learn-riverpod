@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:journal_riverpod/reddit_clone/features/auth/controller/auth_controller.dart';
 import 'package:journal_riverpod/reddit_clone/utils/style.dart';
+import 'package:routemaster/routemaster.dart';
 
 
 class ProfileDrawer extends ConsumerWidget {
@@ -10,7 +11,9 @@ class ProfileDrawer extends ConsumerWidget {
   void logout(WidgetRef ref) {
     ref.read(authControllerProvider.notifier).logout();
   }
-
+  void navigateToUserProfile(BuildContext context, String uid) {
+    Routemaster.of(context).push('u/$uid');
+  }
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(userProvider);
@@ -18,9 +21,12 @@ class ProfileDrawer extends ConsumerWidget {
       child: SafeArea(
           child: Column(
         children: [
-          CircleAvatar(
-            backgroundImage: NetworkImage(user?.profilePic ?? ""),
-            radius: 45,
+          GestureDetector(
+            onTap: () => navigateToUserProfile(context, user?.uid ?? ""),
+            child: CircleAvatar(
+              backgroundImage: NetworkImage(user?.profilePic ?? ""),
+              radius: 45,
+            ),
           ),
           const SizedBox(
             height: kPading,
@@ -45,6 +51,7 @@ class ProfileDrawer extends ConsumerWidget {
               Icons.person,
             ),
             onTap: () {
+              navigateToUserProfile(context, user?.uid ?? "");
             },
           ),
           ListTile(
