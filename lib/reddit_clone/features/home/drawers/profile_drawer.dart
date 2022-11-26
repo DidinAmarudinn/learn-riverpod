@@ -46,7 +46,7 @@ class ProfileDrawer extends ConsumerWidget {
             height: kPading / 2,
           ),
           ListTile(
-            title: const Text("My Profile"),
+            title: const Text("Profile"),
             leading: const Icon(
               Icons.person,
             ),
