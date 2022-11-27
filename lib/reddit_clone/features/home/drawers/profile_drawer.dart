@@ -55,7 +55,7 @@ class ProfileDrawer extends ConsumerWidget {
             },
           ),
           ListTile(
-            title: const Text("Logout"),
+            title: const Text("Log Out"),
             leading: const Icon(
               Icons.logout_outlined,
             ),
