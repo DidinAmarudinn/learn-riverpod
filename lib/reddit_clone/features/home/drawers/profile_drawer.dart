@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:journal_riverpod/reddit_clone/core/enums.dart';
 import 'package:journal_riverpod/reddit_clone/features/auth/controller/auth_controller.dart';
+import 'package:journal_riverpod/reddit_clone/theme/theme.dart';
 import 'package:journal_riverpod/reddit_clone/utils/style.dart';
 import 'package:routemaster/routemaster.dart';
-
 
 class ProfileDrawer extends ConsumerWidget {
   const ProfileDrawer({super.key});
@@ -11,9 +12,15 @@ class ProfileDrawer extends ConsumerWidget {
   void logout(WidgetRef ref) {
     ref.read(authControllerProvider.notifier).logout();
   }
+
   void navigateToUserProfile(BuildContext context, String uid) {
     Routemaster.of(context).push('u/$uid');
   }
+
+  void toogleTheme(WidgetRef ref) {
+    ref.read(themeNotifierProvider.notifier).toogleTheme();
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(userProvider);
@@ -63,7 +70,10 @@ class ProfileDrawer extends ConsumerWidget {
               logout(ref);
             },
           ),
-          Switch.adaptive(value: true, onChanged: (val){})
+          Switch.adaptive(
+              value: ref.watch(themeNotifierProvider.notifier).mode ==
+                  ThemeModes.dark,
+              onChanged: (val) => toogleTheme(ref))
         ],
       )),
     );
