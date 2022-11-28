@@ -73,7 +73,7 @@ class _MyAppState extends ConsumerState<MyApp> {
             return MaterialApp.router(
               title: 'RiverPod App',
               debugShowCheckedModeBanner: false,
-              theme: ThemeConfig.darkModeAppTheme,
+              theme: ref.watch(themeNotifierProvider),
               routerDelegate: RoutemasterDelegate(routesBuilder: (context) {
                 if (data != null) {
                   getData(ref, data);
