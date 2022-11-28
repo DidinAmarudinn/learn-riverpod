@@ -45,7 +45,12 @@ class _AddModsScreenState extends ConsumerState<AddModsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Add Mods"),
+        title: Text(
+          "Add Mods",
+          style: TextStyle(
+            color: Theme.of(context).textTheme.titleLarge?.color,
+          ),
+        ),
         centerTitle: false,
         actions: [
           IconButton(

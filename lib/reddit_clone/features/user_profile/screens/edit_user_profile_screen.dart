@@ -72,24 +72,25 @@ class _EditUserProfileScreenState extends ConsumerState<EditUserProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final isLoading = ref.watch(userPforileControllerProvider);
-    return isLoading
-        ? const LoadingWidget()
-        : ref.watch(getUserDataProvider(widget.uid)).when(data: (user) {
-            return Scaffold(
-              backgroundColor: ThemeConfig.darkModeAppTheme.backgroundColor,
-              appBar: AppBar(
-                title: const Text("Edit Profile"),
-                centerTitle: false,
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      save();
-                    },
-                    child: const Text("Save"),
-                  ),
-                ],
-              ),
-              body: Padding(
+    final currentTheme = ref.watch(themeNotifierProvider);
+    return ref.watch(getUserDataProvider(widget.uid)).when(data: (user) {
+      return Scaffold(
+        backgroundColor: currentTheme.backgroundColor,
+        appBar: AppBar(
+          title: const Text("Edit Profile"),
+          centerTitle: false,
+          actions: [
+            TextButton(
+              onPressed: () {
+                save();
+              },
+              child: const Text("Save"),
+            ),
+          ],
+        ),
+        body: isLoading
+            ? const LoadingWidget()
+            : Padding(
                 padding: const EdgeInsets.all(kPading / 2),
                 child: Column(
                   children: [
@@ -104,8 +105,7 @@ class _EditUserProfileScreenState extends ConsumerState<EditUserProfileScreen> {
                               dashPattern: const [10, 4],
                               borderType: BorderType.RRect,
                               strokeCap: StrokeCap.round,
-                              color: ThemeConfig
-                                  .darkModeAppTheme.textTheme.bodyText2!.color!,
+                              color: currentTheme.textTheme.bodyText2!.color!,
                               child: Container(
                                 width: double.infinity,
                                 height: 150,
@@ -168,11 +168,11 @@ class _EditUserProfileScreenState extends ConsumerState<EditUserProfileScreen> {
                   ],
                 ),
               ),
-            );
-          }, error: (error, stackTrace) {
-            return ErrorText(error: error.toString());
-          }, loading: () {
-            return const LoadingWidget();
-          });
+      );
+    }, error: (error, stackTrace) {
+      return ErrorText(error: error.toString());
+    }, loading: () {
+      return const LoadingWidget();
+    });
   }
 }
