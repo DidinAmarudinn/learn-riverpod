@@ -35,7 +35,13 @@ class _CreateCommunityScreenState extends ConsumerState<CreateCommunityScreen> {
     final loading = ref.watch(communityControllerProvider);
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Create Community"),
+        centerTitle: false,
+        title: Text(
+          "Create Community",
+          style: TextStyle(
+            color: Theme.of(context).textTheme.titleLarge?.color,
+          ),
+        ),
       ),
       body: loading
           ? const LoadingWidget()

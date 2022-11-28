@@ -1,7 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:journal_riverpod/reddit_clone/theme/theme.dart';
 import 'package:routemaster/routemaster.dart';
 
 import '../../../utils/style.dart';
@@ -53,7 +52,7 @@ class UserProfileScreen extends ConsumerWidget {
                         child: OutlinedButton(
                           onPressed: () => navigateToEditUserProfile(context),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: ThemeConfig.darkModeAppTheme.backgroundColor,
+                            
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20),
                             ),
