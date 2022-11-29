@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:journal_riverpod/reddit_clone/features/add_post/screens/add_post_screen.dart';
 import 'package:journal_riverpod/reddit_clone/features/feed/screens/fedd_screen.dart';
+import 'package:journal_riverpod/reddit_clone/models/community_model.dart';
 
 void showSnackBar(BuildContext context, String text) {
   ScaffoldMessenger.of(context)
@@ -28,4 +29,7 @@ final indexPageProvider = StateProvider((ref) {
   return 0;
 });
 
+final selectCommunityProvider = StateProvider<Community?>((ref){
+  return null;
+});
 
