@@ -22,6 +22,14 @@ class PostCard extends ConsumerWidget {
     ref.read(postControllerProvider.notifier).deletePost(post, context);
   }
 
+  void upVotes(WidgetRef ref) {
+    ref.read(postControllerProvider.notifier).upVotes(post);
+  }
+
+  void downVotes(WidgetRef ref) {
+    ref.read(postControllerProvider.notifier).downVotes(post);
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isTypeLink = post.type == "Link";
@@ -113,25 +121,22 @@ class PostCard extends ConsumerWidget {
                                   )),
                             ),
                           if (isTypeLink)
-                            SizedBox(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.3,
-                                child: AnyLinkPreview(
-                                  link: post.link!,
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withOpacity(0.08),
-                                      spreadRadius: 4,
-                                      blurRadius: 16,
-                                      offset: const Offset(0, 1),
-                                    )
-                                  ],
-                                  backgroundColor:
-                                      Theme.of(context).backgroundColor,
-                                  displayDirection:
-                                      UIDirection.uiDirectionVertical,
-                                  bodyMaxLines: 4,
-                                )),
+                            AnyLinkPreview(
+                              link: post.link!,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.08),
+                                  spreadRadius: 4,
+                                  blurRadius: 16,
+                                  offset: const Offset(0, 1),
+                                )
+                              ],
+                              borderRadius: 4,
+                              backgroundColor: Colors.white,
+                              displayDirection:
+                                  UIDirection.uiDirectionHorizontal,
+                              bodyMaxLines: 8,
+                            ),
                           if (isTypeText)
                             Text(
                               post.description ?? "",
@@ -146,7 +151,9 @@ class PostCard extends ConsumerWidget {
                               Row(
                                 children: [
                                   IconButton(
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      upVotes(ref);
+                                    },
                                     icon: Icon(
                                       up,
                                       size: 30,
@@ -160,11 +167,13 @@ class PostCard extends ConsumerWidget {
                                     style: const TextStyle(fontSize: 17),
                                   ),
                                   IconButton(
-                                    onPressed: () {},
+                                    onPressed: () {
+                                       downVotes(ref);
+                                    },
                                     icon: Icon(
                                       down,
                                       size: 30,
-                                      color: post.upvotes.contains(user?.uid)
+                                      color: post.downvotes.contains(user?.uid)
                                           ? ThemeConfig.blueColor
                                           : null,
                                     ),
@@ -174,13 +183,13 @@ class PostCard extends ConsumerWidget {
                               Row(
                                 children: [
                                   IconButton(
-                                    onPressed: () {},
-                                    icon: Icon(
+                                    onPressed: () {
+                                     
+                                    },
+                                    icon: const Icon(
                                       Icons.comment_outlined,
                                       size: 25,
-                                      color: post.upvotes.contains(user?.uid)
-                                          ? ThemeConfig.redColor
-                                          : null,
+                                      
                                     ),
                                   ),
                                   Text(
