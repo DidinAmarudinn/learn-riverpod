@@ -37,16 +37,16 @@ class PostController extends StateNotifier<bool> {
       id: postId,
       title: title,
       communityName: community.name,
-      communityProfilePict: community.avatar,
-      upVotes: [],
-      downVotes: [],
+      communityProfilePic: community.avatar,
+      upvotes: [],
+      downvotes: [],
       commentCount: 0,
       username: user?.name ?? "",
       uid: user?.uid ?? "",
       type: "Text",
       createdAt: DateTime.now(),
       awards: [],
-      desc: desc,
+      description: desc,
     );
 
     final result = await _repository.addPost(post);
@@ -69,9 +69,9 @@ class PostController extends StateNotifier<bool> {
       id: postId,
       title: title,
       communityName: community.name,
-      communityProfilePict: community.avatar,
-      upVotes: [],
-      downVotes: [],
+      communityProfilePic: community.avatar,
+      upvotes: [],
+      downvotes: [],
       commentCount: 0,
       username: user?.name ?? "",
       uid: user?.uid ?? "",
@@ -104,9 +104,9 @@ class PostController extends StateNotifier<bool> {
         id: postId,
         title: title,
         communityName: community.name,
-        communityProfilePict: community.avatar,
-        upVotes: [],
-        downVotes: [],
+        communityProfilePic: community.avatar,
+        upvotes: [],
+        downvotes: [],
         commentCount: 0,
         username: user?.name ?? "",
         uid: user?.uid ?? "",
@@ -115,13 +115,28 @@ class PostController extends StateNotifier<bool> {
         awards: [],
         link: r,
       );
-        
+
       final result = await _repository.addPost(post);
       state = false;
       result.fold((l) => showSnackBar(context, l.message), (r) {
         showSnackBar(context, "Posted successfully!");
         Routemaster.of(context).pop();
       });
+    });
+  }
+
+  Stream<List<Post>> fetchUserPosts(List<Community> communities) {
+    if (communities.isNotEmpty) {
+      return _repository.fetchUserPosts(communities);
+    } else {
+      return Stream.value([]);
+    }
+  }
+
+  void deletePost(Post post, BuildContext context) async {
+    final res = await _repository.deletePost(post);
+    res.fold((l) => showSnackBar(context, l.message), (r) {
+      showSnackBar(context, "Success delete post");
     });
   }
 }
@@ -137,3 +152,9 @@ final postControllerProvider = StateNotifierProvider<PostController, bool>(
     );
   },
 );
+
+final userPostsProvider =
+    StreamProvider.family((ref, List<Community> communities) {
+  final postController = ref.watch(postControllerProvider.notifier);
+  return postController.fetchUserPosts(communities);
+});
