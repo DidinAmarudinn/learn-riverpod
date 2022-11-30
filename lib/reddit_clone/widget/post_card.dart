@@ -1,0 +1,204 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+
+import 'package:any_link_preview/any_link_preview.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:journal_riverpod/reddit_clone/features/add_post/controller/post_controller.dart';
+import 'package:journal_riverpod/reddit_clone/features/auth/controller/auth_controller.dart';
+
+import 'package:journal_riverpod/reddit_clone/models/post_model.dart';
+import 'package:journal_riverpod/reddit_clone/theme/theme.dart';
+import 'package:journal_riverpod/reddit_clone/utils/image_constants.dart';
+import 'package:journal_riverpod/reddit_clone/utils/style.dart';
+
+class PostCard extends ConsumerWidget {
+  final Post post;
+  const PostCard({
+    super.key,
+    required this.post,
+  });
+
+  void deletePost(context, WidgetRef ref) {
+    ref.read(postControllerProvider.notifier).deletePost(post, context);
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isTypeLink = post.type == "Link";
+    final isTypeImage = post.type == "Image";
+    final isTypeText = post.type == "Text";
+    final user = ref.watch(userProvider);
+    return Column(
+      children: [
+        Container(
+            padding: const EdgeInsets.symmetric(vertical: kPading / 2),
+            decoration: BoxDecoration(
+              color: Theme.of(context).drawerTheme.backgroundColor,
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                    child: Column(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                              horizontal: kPading, vertical: kPading / 4)
+                          .copyWith(right: 0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              CircleAvatar(
+                                backgroundImage:
+                                    NetworkImage(post.communityProfilePic),
+                                radius: 20,
+                              ),
+                              const SizedBox(
+                                width: kPading / 3,
+                              ),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "r/${post.communityName}",
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: kPading / 5,
+                                    ),
+                                    Text(
+                                      "u/${post.username}",
+                                      style: const TextStyle(
+                                        fontSize: 13,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              if (post.uid == user?.uid)
+                                IconButton(
+                                    onPressed: () {
+                                      deletePost(context, ref);
+                                    },
+                                    icon: Icon(
+                                      Icons.delete_outline,
+                                      color: ThemeConfig.redColor,
+                                    ))
+                            ],
+                          ),
+                          const SizedBox(
+                            height: kPading / 3,
+                          ),
+                          Text(
+                            post.title,
+                            style: const TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.bold),
+                          ),
+                          const SizedBox(
+                            height: kPading / 2,
+                          ),
+                          if (isTypeImage)
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.3,
+                              child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(4),
+                                  child: Image.network(
+                                    post.link!,
+                                    fit: BoxFit.cover,
+                                  )),
+                            ),
+                          if (isTypeLink)
+                            SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.3,
+                                child: AnyLinkPreview(
+                                  link: post.link!,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.08),
+                                      spreadRadius: 4,
+                                      blurRadius: 16,
+                                      offset: const Offset(0, 1),
+                                    )
+                                  ],
+                                  backgroundColor:
+                                      Theme.of(context).backgroundColor,
+                                  displayDirection:
+                                      UIDirection.uiDirectionVertical,
+                                  bodyMaxLines: 4,
+                                )),
+                          if (isTypeText)
+                            Text(
+                              post.description ?? "",
+                              style: TextStyle(
+                                  color: Theme.of(context)
+                                      .textTheme
+                                      .caption
+                                      ?.color),
+                            ),
+                          Row(
+                            children: [
+                              Row(
+                                children: [
+                                  IconButton(
+                                    onPressed: () {},
+                                    icon: Icon(
+                                      up,
+                                      size: 30,
+                                      color: post.upvotes.contains(user?.uid)
+                                          ? ThemeConfig.redColor
+                                          : null,
+                                    ),
+                                  ),
+                                  Text(
+                                    "${post.upvotes.length - post.downvotes.length == 0 ? "Vote" : post.upvotes.length - post.downvotes.length}",
+                                    style: const TextStyle(fontSize: 17),
+                                  ),
+                                  IconButton(
+                                    onPressed: () {},
+                                    icon: Icon(
+                                      down,
+                                      size: 30,
+                                      color: post.upvotes.contains(user?.uid)
+                                          ? ThemeConfig.blueColor
+                                          : null,
+                                    ),
+                                  )
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  IconButton(
+                                    onPressed: () {},
+                                    icon: Icon(
+                                      Icons.comment_outlined,
+                                      size: 25,
+                                      color: post.upvotes.contains(user?.uid)
+                                          ? ThemeConfig.redColor
+                                          : null,
+                                    ),
+                                  ),
+                                  Text(
+                                    "${post.commentCount == 0 ? "Comment" : post.commentCount}",
+                                    style: const TextStyle(fontSize: 17),
+                                  ),
+                                ],
+                              )
+                            ],
+                          )
+                        ],
+                      ),
+                    )
+                  ],
+                ))
+              ],
+            )),
+      ],
+    );
+  }
+}
