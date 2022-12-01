@@ -9,7 +9,6 @@ import 'package:journal_riverpod/reddit_clone/features/home/drawers/profile_draw
 
 import '../../../theme/theme.dart';
 
-
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
@@ -18,8 +17,6 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
-  
-
   void displayDrawer(BuildContext context) {
     Scaffold.of(context).openDrawer();
   }
@@ -34,62 +31,64 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final currentTheme = ref.watch(themeNotifierProvider);
     final indexPage = ref.watch(indexPageProvider);
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Home"),
-        leading: Builder(builder: (context) {
-          return IconButton(
-            onPressed: () => displayDrawer(context),
-            icon: const Icon(
-              Icons.menu,
-            ),
-          );
-        }),
-        actions: [
-          IconButton(
-            onPressed: () {
-              showSearch(
-                  context: context, delegate: SearchCommunityDelegate(ref));
-            },
-            icon: const Icon(
-              Icons.search,
+        appBar: AppBar(
+          title: Text(
+            "Home",
+            style: TextStyle(
+              color: Theme.of(context).textTheme.titleLarge?.color,
             ),
           ),
-          Builder(builder: (context) {
+          leading: Builder(builder: (context) {
             return IconButton(
-              onPressed: () => displayEndDrawer(context),
-              icon: CircleAvatar(
-                backgroundImage: NetworkImage(user?.profilePic ?? ""),
+              onPressed: () => displayDrawer(context),
+              icon: const Icon(
+                Icons.menu,
               ),
             );
-          })
-        ],
-        centerTitle: false,
-      ),
-      drawer: const CommunityDrawer(),
-      endDrawer: const ProfileDrawer(),
-      bottomNavigationBar: CupertinoTabBar(
-        activeColor: currentTheme.iconTheme.color,
-        currentIndex: indexPage,
-        backgroundColor: currentTheme.backgroundColor,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.home,
+          }),
+          actions: [
+            IconButton(
+              onPressed: () {
+                showSearch(
+                    context: context, delegate: SearchCommunityDelegate(ref));
+              },
+              icon: const Icon(
+                Icons.search,
+              ),
             ),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.add,
+            Builder(builder: (context) {
+              return IconButton(
+                onPressed: () => displayEndDrawer(context),
+                icon: CircleAvatar(
+                  backgroundImage: NetworkImage(user?.profilePic ?? ""),
+                ),
+              );
+            })
+          ],
+          centerTitle: false,
+        ),
+        drawer: const CommunityDrawer(),
+        endDrawer: const ProfileDrawer(),
+        bottomNavigationBar: CupertinoTabBar(
+          activeColor: currentTheme.iconTheme.color,
+          currentIndex: indexPage,
+          backgroundColor: currentTheme.backgroundColor,
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(
+                Icons.home,
+              ),
             ),
-          ),
-        ],
-        onTap: (val) {
-          ref.read(indexPageProvider.notifier).state = val;
-        } ,
-      ),
-      body: tabWidgets[indexPage]
-    );
+            BottomNavigationBarItem(
+              icon: Icon(
+                Icons.add,
+              ),
+            ),
+          ],
+          onTap: (val) {
+            ref.read(indexPageProvider.notifier).state = val;
+          },
+        ),
+        body: tabWidgets[indexPage]);
   }
 }
-
-

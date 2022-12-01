@@ -96,7 +96,9 @@ class _AddPostTypeScreenState extends ConsumerState<AddPostTypeScreen> {
     final isLoading = ref.watch(postControllerProvider);
     return Scaffold(
       appBar: AppBar(
-        title: Text("Post ${widget.type}"),
+        title: Text("Post ${widget.type}",  style: TextStyle(
+              color: Theme.of(context).textTheme.titleLarge?.color,
+            ),),
         actions: [
           TextButton(
             onPressed: () => post(selectedCommunity ?? _communities[0]),
