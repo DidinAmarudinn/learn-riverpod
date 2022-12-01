@@ -9,6 +9,7 @@ import 'package:routemaster/routemaster.dart';
 
 import '../../../core/provider/storage_repository.dart';
 import '../../../core/utils.dart';
+import '../../../models/post_model.dart';
 
 class UserProfileController extends StateNotifier<bool> {
   final UserProfileRepository _repository;
@@ -56,14 +57,20 @@ class UserProfileController extends StateNotifier<bool> {
         user = user.copyWith(banner: url);
       });
     }
-    user = user.copyWith(name: name); 
+    user = user.copyWith(name: name);
     final result = await _repository.editProfile(user);
     state = false;
     result.fold((l) => showSnackBar(context, l.message), (r) {
-      _ref.read(userProvider.notifier).update((state) => user,);
+      _ref.read(userProvider.notifier).update(
+            (state) => user,
+          );
       showSnackBar(context, "Success edit profile");
       Routemaster.of(context).pop();
     });
+  }
+
+  Stream<List<Post>> getUserPost(String uid) {
+    return _repository.getUserPost(uid);
   }
 }
 
@@ -76,4 +83,10 @@ final userPforileControllerProvider =
     ref: ref,
     storageRepository: storageRepository,
   );
+});
+
+final getUserPostProvider = StreamProvider.family((ref, String uid) {
+  final userProfileController =
+      ref.watch(userPforileControllerProvider.notifier);
+  return userProfileController.getUserPost(uid);
 });

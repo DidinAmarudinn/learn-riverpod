@@ -1,11 +1,13 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:journal_riverpod/reddit_clone/features/user_profile/controller/user_profile_controller.dart';
 import 'package:routemaster/routemaster.dart';
 
 import '../../../utils/style.dart';
 import '../../../widget/error_text.dart';
 import '../../../widget/loading_widget.dart';
+import '../../../widget/post_card.dart';
 import '../../auth/controller/auth_controller.dart';
 
 class UserProfileScreen extends ConsumerWidget {
@@ -52,7 +54,6 @@ class UserProfileScreen extends ConsumerWidget {
                         child: OutlinedButton(
                           onPressed: () => navigateToEditUserProfile(context),
                           style: ElevatedButton.styleFrom(
-                            
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20),
                             ),
@@ -92,7 +93,21 @@ class UserProfileScreen extends ConsumerWidget {
                 ),
               ];
             }),
-            body: Container());
+            body: ref.watch(getUserPostProvider(userData.uid)).when(
+                data: (data) {
+                  return ListView.builder(
+                    itemCount: data.length,
+                    itemBuilder: (context, index) {
+                      final post = data[index];
+
+                      return PostCard(post: post);
+                    },
+                  );
+                },
+                error: (error, stackTrace) {
+                  return ErrorText(error: error.toString());
+                },
+                loading: () => const LoadingWidget()));
       }, error: (err, stacktrace) {
         return ErrorText(error: err.toString());
       }, loading: () {

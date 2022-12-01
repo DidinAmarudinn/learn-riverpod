@@ -7,6 +7,7 @@ import 'package:journal_riverpod/reddit_clone/utils/firebase_constants.dart';
 
 import '../../../core/failure.dart';
 import '../../../core/type_defs.dart';
+import '../../../models/post_model.dart';
 
 class UserProfileRepository {
   final FirebaseFirestore _firestore;
@@ -15,6 +16,8 @@ class UserProfileRepository {
       : _firestore = firestore;
   CollectionReference get _userCollection =>
       _firestore.collection(FirebaseConstants.userCollection);
+  CollectionReference get _post =>
+      _firestore.collection(FirebaseConstants.postCollection);
 
   FutureVoid editProfile(UserModel userModel) async {
     try {
@@ -26,9 +29,20 @@ class UserProfileRepository {
       return left(Failure(message: e.toString()));
     }
   }
+
+  Stream<List<Post>> getUserPost(String uid) {
+    return _post
+        .where('uid', isEqualTo: uid)
+        .orderBy('createdAt', descending: true)
+        .snapshots()
+        .map(
+          (event) => event.docs
+              .map((e) => Post.fromMap(e.data() as Map<String, dynamic>))
+              .toList(),
+        );
+  }
 }
 
 final userProfileRepositoryProvider = Provider<UserProfileRepository>((ref) {
   return UserProfileRepository(firestore: ref.watch(firestoreProvider));
 });
-
