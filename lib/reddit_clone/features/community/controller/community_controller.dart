@@ -10,6 +10,8 @@ import 'package:journal_riverpod/reddit_clone/models/community_model.dart';
 import 'package:journal_riverpod/reddit_clone/utils/image_constants.dart';
 import 'package:routemaster/routemaster.dart';
 
+import '../../../models/post_model.dart';
+
 class CommunityController extends StateNotifier<bool> {
   final CommunityRepository _repository;
   final Ref _ref;
@@ -55,6 +57,10 @@ class CommunityController extends StateNotifier<bool> {
 
   Stream<List<Community>> searchCommunity(String query) {
     return _repository.searchCommunity(query);
+  }
+
+  Stream<List<Post>> getCommunityPost(String communityName) {
+    return _repository.getCommunityPost(communityName);
   }
 
   void editCommunity({
@@ -138,7 +144,7 @@ final communityControllerProvider =
   );
 });
 
-final userCommunitiesProvider = StreamProvider.autoDispose((ref) {
+final userCommunitiesProvider = StreamProvider((ref) {
   final communityController = ref.watch(communityControllerProvider.notifier);
   return communityController.getUserCommunities();
 });
@@ -148,8 +154,15 @@ final searchCommunitiesProvider = StreamProvider.family((ref, String query) {
   return communityController.searchCommunity(query);
 });
 
-final getCommunityByNameProvider =
-    StreamProvider.family.autoDispose((ref, String name) {
-  final communityController = ref.watch(communityControllerProvider.notifier);
-  return communityController.getCommunityByName(name);
+final getCommunityByNameProvider = StreamProvider.family((ref, String name) {
+  return ref
+      .watch(communityControllerProvider.notifier)
+      .getCommunityByName(name);
+});
+
+final getCommunityPostProvider =
+    StreamProvider.family((ref, String communityName) {
+  return ref
+      .watch(communityControllerProvider.notifier)
+      .getCommunityPost(communityName);
 });

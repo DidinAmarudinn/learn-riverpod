@@ -9,6 +9,8 @@ import 'package:journal_riverpod/reddit_clone/widget/error_text.dart';
 import 'package:journal_riverpod/reddit_clone/widget/loading_widget.dart';
 import 'package:routemaster/routemaster.dart';
 
+import '../../../widget/post_card.dart';
+
 class CommunityScreen extends ConsumerWidget {
   final String name;
   const CommunityScreen({
@@ -131,7 +133,21 @@ class CommunityScreen extends ConsumerWidget {
                 ),
               ];
             }),
-            body: Container());
+            body: ref.watch(getCommunityPostProvider(name)).when(
+                data: (data) {
+                  return ListView.builder(
+                    itemCount: data.length,
+                    itemBuilder: (context, index) {
+                      final post = data[index];
+
+                      return PostCard(post: post);
+                    },
+                  );
+                },
+                error: (error, stackTrace) {
+                  return ErrorText(error: error.toString());
+                },
+                loading: () => const LoadingWidget()));
       }, error: (err, stacktrace) {
         return ErrorText(error: err.toString());
       }, loading: () {

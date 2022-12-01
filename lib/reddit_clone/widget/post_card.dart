@@ -5,11 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:journal_riverpod/reddit_clone/features/add_post/controller/post_controller.dart';
 import 'package:journal_riverpod/reddit_clone/features/auth/controller/auth_controller.dart';
+import 'package:journal_riverpod/reddit_clone/features/community/controller/community_controller.dart';
 
 import 'package:journal_riverpod/reddit_clone/models/post_model.dart';
 import 'package:journal_riverpod/reddit_clone/theme/theme.dart';
 import 'package:journal_riverpod/reddit_clone/utils/image_constants.dart';
 import 'package:journal_riverpod/reddit_clone/utils/style.dart';
+import 'package:journal_riverpod/reddit_clone/widget/error_text.dart';
+import 'package:journal_riverpod/reddit_clone/widget/loading_widget.dart';
+import 'package:routemaster/routemaster.dart';
 
 class PostCard extends ConsumerWidget {
   final Post post;
@@ -28,6 +32,14 @@ class PostCard extends ConsumerWidget {
 
   void downVotes(WidgetRef ref) {
     ref.read(postControllerProvider.notifier).downVotes(post);
+  }
+
+  void navigateToUserProfile(BuildContext context) {
+    Routemaster.of(context).push('u/${post.uid}');
+  }
+
+  void navigateToCommunity(BuildContext context) {
+    Routemaster.of(context).push('r/${post.communityName}');
   }
 
   @override
@@ -57,11 +69,15 @@ class PostCard extends ConsumerWidget {
                         children: [
                           Row(
                             children: [
-                              CircleAvatar(
-                                backgroundImage:
-                                    NetworkImage(post.communityProfilePic),
-                                radius: 20,
+                              GestureDetector(
+                                onTap: ()=> navigateToCommunity(context),
+                                child: CircleAvatar(
+                                  backgroundImage:
+                                      NetworkImage(post.communityProfilePic),
+                                  radius: 20,
+                                ),
                               ),
+
                               const SizedBox(
                                 width: kPading / 3,
                               ),
@@ -69,20 +85,26 @@ class PostCard extends ConsumerWidget {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      "r/${post.communityName}",
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
+                                    GestureDetector(
+                                      onTap: () => navigateToCommunity(context) ,
+                                      child: Text(
+                                        "r/${post.communityName}",
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                     ),
                                     const SizedBox(
                                       height: kPading / 5,
                                     ),
-                                    Text(
-                                      "u/${post.username}",
-                                      style: const TextStyle(
-                                        fontSize: 13,
+                                    GestureDetector(
+                                      onTap: () => navigateToUserProfile(context),
+                                      child: Text(
+                                        "u/${post.username}",
+                                        style: const TextStyle(
+                                          fontSize: 13,
+                                        ),
                                       ),
                                     ),
                                   ],
@@ -147,6 +169,7 @@ class PostCard extends ConsumerWidget {
                                       ?.color),
                             ),
                           Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Row(
                                 children: [
@@ -158,7 +181,7 @@ class PostCard extends ConsumerWidget {
                                       up,
                                       size: 30,
                                       color: post.upvotes.contains(user?.uid)
-                                          ? ThemeConfig.redColor
+                                          ? ThemeConfig.blueColor
                                           : null,
                                     ),
                                   ),
@@ -168,13 +191,13 @@ class PostCard extends ConsumerWidget {
                                   ),
                                   IconButton(
                                     onPressed: () {
-                                       downVotes(ref);
+                                      downVotes(ref);
                                     },
                                     icon: Icon(
                                       down,
                                       size: 30,
                                       color: post.downvotes.contains(user?.uid)
-                                          ? ThemeConfig.blueColor
+                                          ? ThemeConfig.redColor
                                           : null,
                                     ),
                                   )
@@ -183,13 +206,10 @@ class PostCard extends ConsumerWidget {
                               Row(
                                 children: [
                                   IconButton(
-                                    onPressed: () {
-                                     
-                                    },
+                                    onPressed: () {},
                                     icon: const Icon(
                                       Icons.comment_outlined,
                                       size: 25,
-                                      
                                     ),
                                   ),
                                   Text(
@@ -197,7 +217,28 @@ class PostCard extends ConsumerWidget {
                                     style: const TextStyle(fontSize: 17),
                                   ),
                                 ],
-                              )
+                              ),
+                              ref
+                                  .watch(getCommunityByNameProvider(
+                                      post.communityName))
+                                  .when(
+                                    data: (data) {
+                                      if (data.mods.contains(user?.uid)) {
+                                        return IconButton(
+                                          onPressed: () =>
+                                              deletePost(context, ref),
+                                          icon: const Icon(
+                                            Icons.admin_panel_settings,
+                                          ),
+                                        );
+                                      }
+                                      return const SizedBox();
+                                    },
+                                    error: (error, stackTrace) => ErrorText(
+                                      error: error.toString(),
+                                    ),
+                                    loading: () => const LoadingWidget(),
+                                  ),
                             ],
                           )
                         ],

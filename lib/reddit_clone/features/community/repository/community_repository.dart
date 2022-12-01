@@ -7,12 +7,18 @@ import 'package:journal_riverpod/reddit_clone/core/type_defs.dart';
 import 'package:journal_riverpod/reddit_clone/models/community_model.dart';
 import 'package:journal_riverpod/reddit_clone/utils/firebase_constants.dart';
 
+import '../../../models/post_model.dart';
+
 class CommunityRepository {
   final FirebaseFirestore _firestore;
 
   CommunityRepository({required FirebaseFirestore firestore})
       : _firestore = firestore;
 
+  CollectionReference get _post =>
+      _firestore.collection(FirebaseConstants.postCollection);
+  CollectionReference get _communities =>
+      _firestore.collection(FirebaseConstants.communitiesCollection);
   FutureVoid createCommunity(Community community) async {
     try {
       var communityDoc = await _communities.doc(community.name).get();
@@ -39,7 +45,7 @@ class CommunityRepository {
     }
   }
 
-    FutureVoid leaveCommunity(String communityName, String userId) async {
+  FutureVoid leaveCommunity(String communityName, String userId) async {
     try {
       return right(_communities.doc(communityName).update({
         "members": FieldValue.arrayRemove([userId])
@@ -50,7 +56,8 @@ class CommunityRepository {
       return Left(Failure(message: e.toString()));
     }
   }
-FutureVoid addMods(String communityName, List<String> uids) async {
+
+  FutureVoid addMods(String communityName, List<String> uids) async {
     try {
       return right(_communities.doc(communityName).update({
         "mods": uids,
@@ -112,8 +119,18 @@ FutureVoid addMods(String communityName, List<String> uids) async {
     });
   }
 
-  CollectionReference get _communities =>
-      _firestore.collection(FirebaseConstants.communitiesCollection);
+
+  Stream<List<Post>> getCommunityPost(String communityName) {
+    return _post
+        .where('communityName', isEqualTo: communityName)
+        .orderBy('createdAt', descending: true)
+        .snapshots()
+        .map(
+          (event) => event.docs
+              .map((e) => Post.fromMap(e.data() as Map<String, dynamic>))
+              .toList(),
+        );
+  }
 }
 
 final communityRepositoryProvider = Provider<CommunityRepository>((ref) {
