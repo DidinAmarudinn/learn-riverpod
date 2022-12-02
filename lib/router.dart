@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:journal_riverpod/reddit_clone/features/add_post/screens/add_post_type_screen.dart';
+import 'package:journal_riverpod/reddit_clone/features/add_post/screens/comment_screen.dart';
 import 'package:journal_riverpod/reddit_clone/features/auth/screens/login_screen.dart';
 import 'package:journal_riverpod/reddit_clone/features/community/screens/add_mods_screen.dart';
 import 'package:journal_riverpod/reddit_clone/features/community/screens/community_screen.dart';
@@ -53,6 +54,11 @@ final loginRoutes = RouteMap(routes: {
   '/add-post/:type': (route) => MaterialPage(
         child: AddPostTypeScreen(
           type: route.pathParameters["type"] ?? "",
+        ),
+      ),
+  '/post/:postId/comments': (route) => MaterialPage(
+        child: CommentScreen(
+          postId: route.pathParameters["postId"] ?? "",
         ),
       ),
 });
