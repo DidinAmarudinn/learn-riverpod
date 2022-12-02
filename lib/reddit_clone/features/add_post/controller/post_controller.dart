@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:journal_riverpod/reddit_clone/core/utils.dart';
 import 'package:journal_riverpod/reddit_clone/features/add_post/repository/post_repository.dart';
 import 'package:journal_riverpod/reddit_clone/features/auth/controller/auth_controller.dart';
+import 'package:journal_riverpod/reddit_clone/models/comment.dart';
 import 'package:journal_riverpod/reddit_clone/models/community_model.dart';
 import 'package:journal_riverpod/reddit_clone/models/post_model.dart';
 import 'package:routemaster/routemaster.dart';
@@ -144,9 +145,40 @@ class PostController extends StateNotifier<bool> {
     final userId = _ref.read(userProvider)?.uid ?? "";
     _repository.upVotes(post, userId);
   }
+
   void downVotes(Post post) async {
     final userId = _ref.read(userProvider)?.uid ?? "";
     _repository.downVotes(post, userId);
+  }
+
+  void addComment({
+    required BuildContext context,
+    required String text,
+    required Post post,
+  }) async {
+    final user = _ref.read(userProvider);
+    String id = const Uuid().v1();
+    Comment comment = Comment(
+      id: id,
+      text: text,
+      createdAt: DateTime.now(),
+      postId: post.id,
+      userName: user?.name ?? "",
+      profilePic: user?.profilePic ?? "",
+      userId: user?.uid ?? "",
+    );
+
+    final res = await _repository.addComment(comment);
+    res.fold((l) => showSnackBar(context, l.message),
+        (r) => showSnackBar(context, "Comment send successfully!"));
+  }
+
+  Stream<Post> getPostById(String postId) {
+    return _repository.getPostById(postId);
+  }
+
+  Stream<List<Comment>> getComments(String postId) {
+    return _repository.getComments(postId);
   }
 }
 
@@ -166,4 +198,15 @@ final userPostsProvider =
     StreamProvider.family((ref, List<Community> communities) {
   final postController = ref.watch(postControllerProvider.notifier);
   return postController.fetchUserPosts(communities);
+});
+
+final getPostByIdProvider = StreamProvider.family((ref, String postId) {
+  final postController = ref.watch(postControllerProvider.notifier);
+  return postController.getPostById(postId);
+});
+
+
+final getCommentsProvider = StreamProvider.family((ref, String postId)  {
+   final postController = ref.watch(postControllerProvider.notifier);
+  return postController.getComments(postId);
 });
