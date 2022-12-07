@@ -12,13 +12,12 @@ class UserServiceImpl extends UserService {
   final http.Client client;
 
   UserServiceImpl({required this.client});
-  final baseUrl = "https://reqres.in";
+  var baseUrl = "https://reqres.in";
   @override
   Future<ListUserModel?> getUserList(int page) async {
     final response =
-        await client.get(Uri.parse("$baseUrl/api/users?page=$page"));
+        await client.get(Uri.parse("$baseUrl/api/users?page=$page&per_page=10"));
     if (response.statusCode == 200) {
-      print(response.body);
       return ListUserModel.fromJson(json.decode(response.body));
     } else {
       throw ServerException();
