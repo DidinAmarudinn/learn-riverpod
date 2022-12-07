@@ -20,7 +20,8 @@ class UserListScreen extends ConsumerWidget {
                 var user = val[index];
                 return Container(
                   padding: const EdgeInsets.all(12),
-                  margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(8),
@@ -46,11 +47,15 @@ class UserListScreen extends ConsumerWidget {
                               height: 30,
                             ),
                           ),
-                          const SizedBox(width: 12,),
+                          const SizedBox(
+                            width: 12,
+                          ),
                           Text(user.firstName ?? "")
                         ],
                       ),
-                      const SizedBox(height: 12,),
+                      const SizedBox(
+                        height: 12,
+                      ),
                       Text(user.email ?? "")
                     ],
                   ),

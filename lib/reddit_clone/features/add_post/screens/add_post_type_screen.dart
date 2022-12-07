@@ -72,14 +72,16 @@ class _AddPostTypeScreenState extends ConsumerState<AddPostTypeScreen> {
             community: selectedCommunity,
           );
     } else if (isTypeText && titleController.text.isNotEmpty) {
-        ref.read(postControllerProvider.notifier).shareTextPost(
+      ref.read(postControllerProvider.notifier).shareTextPost(
             context: context,
             title: titleController.text,
             desc: descriptionController.text.trim(),
             community: selectedCommunity,
           );
-    } else if (isTypeLink && titleController.text.isNotEmpty && linkController.text.isNotEmpty) {
-        ref.read(postControllerProvider.notifier).shareLinkPost(
+    } else if (isTypeLink &&
+        titleController.text.isNotEmpty &&
+        linkController.text.isNotEmpty) {
+      ref.read(postControllerProvider.notifier).shareLinkPost(
             context: context,
             title: titleController.text,
             link: linkController.text.trim(),
@@ -96,9 +98,12 @@ class _AddPostTypeScreenState extends ConsumerState<AddPostTypeScreen> {
     final isLoading = ref.watch(postControllerProvider);
     return Scaffold(
       appBar: AppBar(
-        title: Text("Post ${widget.type}",  style: TextStyle(
-              color: Theme.of(context).textTheme.titleLarge?.color,
-            ),),
+        title: Text(
+          "Post ${widget.type}",
+          style: TextStyle(
+            color: Theme.of(context).textTheme.titleLarge?.color,
+          ),
+        ),
         actions: [
           TextButton(
             onPressed: () => post(selectedCommunity ?? _communities[0]),
@@ -106,95 +111,99 @@ class _AddPostTypeScreenState extends ConsumerState<AddPostTypeScreen> {
           ),
         ],
       ),
-      body:isLoading? const LoadingWidget(): Padding(
-        padding: const EdgeInsets.symmetric(
-            horizontal: kPading, vertical: kPading / 2),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            TextFieldWidget(
-              controller: titleController,
-              hintText: "Enter Title Here",
-              maxLength: 30,
-            ),
-            const SizedBox(
-              height: kPading,
-            ),
-            if (isTypeImage)
-              GestureDetector(
-                onTap: selectBannerImage,
-                child: DottedBorder(
-                  radius: const Radius.circular(10),
-                  dashPattern: const [10, 4],
-                  borderType: BorderType.RRect,
-                  strokeCap: StrokeCap.round,
-                  color: Theme.of(context).textTheme.bodyText2!.color!,
-                  child: Container(
-                      width: double.infinity,
-                      height: 150,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10)),
-                      child: bannerFile != null
-                          ? Image.file(
-                              bannerFile!,
-                              fit: BoxFit.cover,
-                            )
-                          : const Center(
-                              child: Icon(
-                                Icons.camera_alt_rounded,
-                                size: 40,
-                              ),
-                            )),
-                ),
-              ),
-            if (isTypeText)
-              TextFieldWidget(
-                controller: descriptionController,
-                hintText: "Enter Description Here",
-                maxLines: 5,
-              ),
-            if (isTypeLink)
-              TextFieldWidget(
-                controller: linkController,
-                hintText: "Enter Link Here",
-                maxLines: 1,
-              ),
-            const SizedBox(
-              height: kPading,
-            ),
-            ref.watch(userCommunitiesProvider).when(
-                data: (communities) {
-                  _communities = communities;
-                  if (communities.isEmpty) {
-                    return const Text("Please join community to make a post");
-                  }
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        "Select Community",
+      body: isLoading
+          ? const LoadingWidget()
+          : Padding(
+              padding: const EdgeInsets.symmetric(
+                  horizontal: kPading, vertical: kPading / 2),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  TextFieldWidget(
+                    controller: titleController,
+                    hintText: "Enter Title Here",
+                    maxLength: 30,
+                  ),
+                  const SizedBox(
+                    height: kPading,
+                  ),
+                  if (isTypeImage)
+                    GestureDetector(
+                      onTap: selectBannerImage,
+                      child: DottedBorder(
+                        radius: const Radius.circular(10),
+                        dashPattern: const [10, 4],
+                        borderType: BorderType.RRect,
+                        strokeCap: StrokeCap.round,
+                        color: Theme.of(context).textTheme.bodyText2!.color!,
+                        child: Container(
+                            width: double.infinity,
+                            height: 150,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10)),
+                            child: bannerFile != null
+                                ? Image.file(
+                                    bannerFile!,
+                                    fit: BoxFit.cover,
+                                  )
+                                : const Center(
+                                    child: Icon(
+                                      Icons.camera_alt_rounded,
+                                      size: 40,
+                                    ),
+                                  )),
                       ),
-                      DropdownButton(
-                        value: selectedCommunity ?? communities[0],
-                        items: communities
-                            .map((e) =>
-                                DropdownMenuItem(value: e, child: Text(e.name)))
-                            .toList(),
-                        onChanged: (val) {
-                          ref.read(selectCommunityProvider.notifier).state =
-                              val;
-                        },
-                      ),
-                    ],
-                  );
-                },
-                error: (err, stackTrace) {
-                  return ErrorText(error: err.toString());
-                },
-                loading: () => const LoadingWidget())
-          ],
-        ),
-      ),
+                    ),
+                  if (isTypeText)
+                    TextFieldWidget(
+                      controller: descriptionController,
+                      hintText: "Enter Description Here",
+                      maxLines: 5,
+                    ),
+                  if (isTypeLink)
+                    TextFieldWidget(
+                      controller: linkController,
+                      hintText: "Enter Link Here",
+                      maxLines: 1,
+                    ),
+                  const SizedBox(
+                    height: kPading,
+                  ),
+                  ref.watch(userCommunitiesProvider).when(
+                      data: (communities) {
+                        _communities = communities;
+                        if (communities.isEmpty) {
+                          return const Text(
+                              "Please join community to make a post");
+                        }
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text(
+                              "Select Community",
+                            ),
+                            DropdownButton(
+                              value: selectedCommunity ?? communities[0],
+                              items: communities
+                                  .map((e) => DropdownMenuItem(
+                                      value: e, child: Text(e.name)))
+                                  .toList(),
+                              onChanged: (val) {
+                                ref
+                                    .read(selectCommunityProvider.notifier)
+                                    .state = val;
+                              },
+                            ),
+                          ],
+                        );
+                      },
+                      error: (err, stackTrace) {
+                        return ErrorText(error: err.toString());
+                      },
+                      loading: () => const LoadingWidget())
+                ],
+              ),
+            ),
     );
   }
 }

@@ -12,7 +12,9 @@ class TextFieldWidget extends StatelessWidget {
       {super.key,
       required this.controller,
       required this.hintText,
-      this.minLines, this.maxLines, this.maxLength});
+      this.minLines,
+      this.maxLines,
+      this.maxLength});
 
   @override
   Widget build(BuildContext context) {

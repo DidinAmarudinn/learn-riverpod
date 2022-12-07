@@ -52,7 +52,7 @@ class SearchCommunityDelegate extends SearchDelegate {
                   ),
                 ),
                 title: Text("r/${community.name}"),
-                onTap: (){
+                onTap: () {
                   Routemaster.of(context).push('/r/${community.name}');
                 },
               );
