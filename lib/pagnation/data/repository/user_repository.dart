@@ -9,6 +9,7 @@ import 'package:journal_riverpod/reddit_clone/core/failure.dart';
 
 abstract class UserRepository {
   Future<Either<Failure, ListUserModel?>> getUserList(int page);
+  Future<Either<Failure, List<Data>>> getUserListPagnation(int page);
 }
 
 class UserRepositoryImpl extends UserRepository {
@@ -20,6 +21,18 @@ class UserRepositoryImpl extends UserRepository {
     try {
       final result = await service.getUserList(page);
       return right(result);
+    } on ServerException {
+      return left(Failure(message: "Internal Server Error"));
+    } on SocketException {
+      return left(Failure(message: "Failled connect to the network"));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<Data>>> getUserListPagnation(int page) async {
+    try {
+      final result = await service.getUserList(page);
+      return right(result?.data ?? []);
     } on ServerException {
       return left(Failure(message: "Internal Server Error"));
     } on SocketException {
