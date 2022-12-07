@@ -19,7 +19,6 @@ class ModToolsScreen extends StatelessWidget {
         centerTitle: false,
         title: Text(
           "Mod Tools",
-          
           style: TextStyle(
             color: Theme.of(context).textTheme.titleLarge?.color,
           ),

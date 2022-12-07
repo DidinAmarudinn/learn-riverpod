@@ -6,7 +6,7 @@ import 'package:routemaster/routemaster.dart';
 class AddPostScreen extends ConsumerWidget {
   const AddPostScreen({super.key});
 
-  void navigateToType(BuildContext context,String type) {
+  void navigateToType(BuildContext context, String type) {
     Routemaster.of(context).push('/add-post/$type');
   }
 
@@ -22,7 +22,7 @@ class AddPostScreen extends ConsumerWidget {
         children: [
           _postCard(
             context,
-            (){
+            () {
               navigateToType(context, "Image");
             },
             Icons.image_outlined,
@@ -30,14 +30,14 @@ class AddPostScreen extends ConsumerWidget {
           _postCard(
             context,
             () {
-               navigateToType(context, "Text");
+              navigateToType(context, "Text");
             },
             Icons.font_download_outlined,
           ),
           _postCard(
             context,
             () {
-               navigateToType(context, "Link");
+              navigateToType(context, "Link");
             },
             Icons.link_outlined,
           ),

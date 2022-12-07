@@ -205,8 +205,7 @@ final getPostByIdProvider = StreamProvider.family((ref, String postId) {
   return postController.getPostById(postId);
 });
 
-
-final getCommentsProvider = StreamProvider.family((ref, String postId)  {
-   final postController = ref.watch(postControllerProvider.notifier);
+final getCommentsProvider = StreamProvider.family((ref, String postId) {
+  final postController = ref.watch(postControllerProvider.notifier);
   return postController.getComments(postId);
 });

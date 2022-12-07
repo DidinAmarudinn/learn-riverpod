@@ -119,7 +119,6 @@ class CommunityRepository {
     });
   }
 
-
   Stream<List<Post>> getCommunityPost(String communityName) {
     return _post
         .where('communityName', isEqualTo: communityName)

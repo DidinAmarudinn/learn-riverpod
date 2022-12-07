@@ -29,7 +29,6 @@ final indexPageProvider = StateProvider((ref) {
   return 0;
 });
 
-final selectCommunityProvider = StateProvider<Community?>((ref){
+final selectCommunityProvider = StateProvider<Community?>((ref) {
   return null;
 });
-

@@ -29,7 +29,9 @@ class CommentCard extends ConsumerWidget {
                 backgroundImage: NetworkImage(comment.profilePic),
                 radius: 16,
               ),
-              const SizedBox(width: kPading/2,),
+              const SizedBox(
+                width: kPading / 2,
+              ),
               Expanded(
                   child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -40,9 +42,12 @@ class CommentCard extends ConsumerWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  Text(comment.text, style: const TextStyle(
-                    height: 1.5,
-                  ),),
+                  Text(
+                    comment.text,
+                    style: const TextStyle(
+                      height: 1.5,
+                    ),
+                  ),
                 ],
               ))
             ],

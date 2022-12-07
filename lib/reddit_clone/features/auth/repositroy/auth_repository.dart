@@ -59,8 +59,8 @@ class AuthRepository {
   }
 
   void logout() async {
-   await _googleSignIn.signOut();
-   await _auth.signOut();
+    await _googleSignIn.signOut();
+    await _auth.signOut();
   }
 
   Stream<UserModel> getUserData(String uid) {

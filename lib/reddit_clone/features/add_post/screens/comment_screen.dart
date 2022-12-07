@@ -76,7 +76,8 @@ class _CommentScreenState extends ConsumerState<CommentScreen> {
                       data: (data) {
                         return Expanded(
                           child: ListView.builder(
-                            padding: const EdgeInsets.symmetric(horizontal: kPading/2),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: kPading / 2),
                             itemCount: data.length,
                             itemBuilder: (context, index) {
                               return CommentCard(comment: data[index]);

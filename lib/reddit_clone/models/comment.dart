@@ -19,8 +19,6 @@ class Comment {
     required this.profilePic,
   });
 
-  
-
   Comment copyWith({
     String? id,
     String? text,
@@ -67,7 +65,8 @@ class Comment {
 
   String toJson() => json.encode(toMap());
 
-  factory Comment.fromJson(String source) => Comment.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory Comment.fromJson(String source) =>
+      Comment.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   String toString() {
@@ -77,25 +76,24 @@ class Comment {
   @override
   bool operator ==(covariant Comment other) {
     if (identical(this, other)) return true;
-  
-    return 
-      other.id == id &&
-      other.text == text &&
-      other.createdAt == createdAt &&
-      other.postId == postId &&
-      other.userId == userId &&
-      other.userName == userName &&
-      other.profilePic == profilePic;
+
+    return other.id == id &&
+        other.text == text &&
+        other.createdAt == createdAt &&
+        other.postId == postId &&
+        other.userId == userId &&
+        other.userName == userName &&
+        other.profilePic == profilePic;
   }
 
   @override
   int get hashCode {
     return id.hashCode ^
-      text.hashCode ^
-      createdAt.hashCode ^
-      postId.hashCode ^
-      userId.hashCode ^
-      userName.hashCode ^
-      profilePic.hashCode;
+        text.hashCode ^
+        createdAt.hashCode ^
+        postId.hashCode ^
+        userId.hashCode ^
+        userName.hashCode ^
+        profilePic.hashCode;
   }
 }

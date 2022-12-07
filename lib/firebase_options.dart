@@ -63,7 +63,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '110858778461',
     projectId: 'reddit-clone-d9bf2',
     storageBucket: 'reddit-clone-d9bf2.appspot.com',
-    iosClientId: '110858778461-3m208fpp8rb2s51jlaak1ml3d1c91h20.apps.googleusercontent.com',
+    iosClientId:
+        '110858778461-3m208fpp8rb2s51jlaak1ml3d1c91h20.apps.googleusercontent.com',
     iosBundleId: 'com.example.journalRiverpod',
   );
 }

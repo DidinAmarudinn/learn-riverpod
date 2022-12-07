@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:journal_riverpod/firebase_options.dart';
+import 'package:journal_riverpod/pagnation/ui/user_list_without_pagnation.dart';
 import 'package:journal_riverpod/reddit_clone/features/auth/controller/auth_controller.dart';
 import 'package:journal_riverpod/reddit_clone/models/user_model.dart';
 import 'package:journal_riverpod/reddit_clone/theme/theme.dart';
@@ -42,7 +43,7 @@ void main() async {
   );
   runApp(
     const ProviderScope(
-      child: MyApp(),
+      child: MyApp2(),
     ),
   );
 }
@@ -77,7 +78,7 @@ class _MyAppState extends ConsumerState<MyApp> {
               routerDelegate: RoutemasterDelegate(routesBuilder: (context) {
                 if (data != null) {
                   getData(ref, data);
-                  if (userModel!=null) {
+                  if (userModel != null) {
                     return loginRoutes;
                   }
                 }
@@ -91,6 +92,23 @@ class _MyAppState extends ConsumerState<MyApp> {
           },
           loading: () => const LoadingWidget(),
         );
+  }
+}
+
+class MyApp2 extends StatelessWidget {
+  const MyApp2({super.key});
+
+  // This widget is the root of your application.
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+      ),
+      home: const UserListWithoutPagnationScreen(),
+    );
   }
 }
 

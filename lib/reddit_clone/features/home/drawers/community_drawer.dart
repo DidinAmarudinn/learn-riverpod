@@ -32,19 +32,21 @@ class CommunityDrawer extends ConsumerWidget {
                   data: (data) {
                     return Expanded(
                       child: ListView.builder(
-                        itemCount: data.length,
-                        itemBuilder: (context, index) {
-                        final community = data[index];
-                        return ListTile(
-                          leading: CircleAvatar(
-                            backgroundImage: NetworkImage(community.avatar,),
-                          ),
-                          title: Text("r/${community.name}"),
-                          onTap: (){
-                            navigagteToCommunity(context, community.name);
-                          },
-                        );
-                      }),
+                          itemCount: data.length,
+                          itemBuilder: (context, index) {
+                            final community = data[index];
+                            return ListTile(
+                              leading: CircleAvatar(
+                                backgroundImage: NetworkImage(
+                                  community.avatar,
+                                ),
+                              ),
+                              title: Text("r/${community.name}"),
+                              onTap: () {
+                                navigagteToCommunity(context, community.name);
+                              },
+                            );
+                          }),
                     );
                   },
                   error: (err, stacktrace) => ErrorText(

@@ -249,13 +249,14 @@ class PostCard extends ConsumerWidget {
                       ],
                     ),
                   ),
-                  
                 ],
               )),
             ],
           ),
         ),
-         const SizedBox(height: kPading/2,),
+        const SizedBox(
+          height: kPading / 2,
+        ),
       ],
     );
   }
