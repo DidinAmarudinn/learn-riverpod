@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:journal_riverpod/pagnation/common/exception.dart';
+import 'package:journal_riverpod/pagnation/model/list_post_fake_model.dart';
 import 'package:journal_riverpod/pagnation/model/list_user_dummy_model.dart';
 import 'package:journal_riverpod/pagnation/model/list_user_model.dart';
 import 'package:http/http.dart' as http;
@@ -8,6 +9,7 @@ import 'package:http/http.dart' as http;
 abstract class UserService {
   Future<ListUserModel?> getUserList(int page);
   Future<UserFakeModel?> getUserListDummy(int page);
+  Future<PostFakeModel?> getPostListDummy(int page, int limit);
 }
 
 class UserServiceImpl extends UserService {
@@ -20,6 +22,7 @@ class UserServiceImpl extends UserService {
   Future<ListUserModel?> getUserList(int page) async {
     final response = await client
         .get(Uri.parse("$baseUrl/api/users?page=$page&per_page=10"));
+    print(response.body);
     if (response.statusCode == 200) {
       return ListUserModel.fromJson(json.decode(response.body));
     } else {
@@ -37,6 +40,21 @@ class UserServiceImpl extends UserService {
     );
     if (response.statusCode == 200) {
       return UserFakeModel.fromJson(json.decode(response.body));
+    } else {
+      throw ServerException();
+    }
+  }
+
+  @override
+  Future<PostFakeModel?> getPostListDummy(int page, int limit) async {
+    final response = await http.get(
+      Uri.parse("$baseUrlDummy/post?page=$page"),
+      headers: {
+        "app-id": "639057ff78f790a934af975b",
+      },
+    );
+    if (response.statusCode == 200) {
+      return PostFakeModel.fromJson(json.decode(response.body));
     } else {
       throw ServerException();
     }

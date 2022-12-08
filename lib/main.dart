@@ -3,7 +3,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:journal_riverpod/firebase_options.dart';
-import 'package:journal_riverpod/pagnation/ui/pagnation_listview.dart';
+import 'package:journal_riverpod/pagnation/ui/pagination_post_listview.dart';
+import 'package:journal_riverpod/pagnation/ui/select_example_pagination.dart';
 import 'package:journal_riverpod/reddit_clone/features/auth/controller/auth_controller.dart';
 import 'package:journal_riverpod/reddit_clone/models/user_model.dart';
 import 'package:journal_riverpod/reddit_clone/theme/theme.dart';
@@ -107,7 +108,7 @@ class MyApp2 extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: PaginatedListView(),
+      home: const SelectExamplePaginationPage(),
     );
   }
 }

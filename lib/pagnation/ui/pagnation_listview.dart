@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:journal_riverpod/pagnation/model/list_user_dummy_model.dart';
 import 'package:journal_riverpod/pagnation/riverpod/pagnation_notifier.dart';
 
-import '../model/list_user_model.dart';
 
 class PaginatedListView extends ConsumerWidget {
   PaginatedListView({Key? key}) : super(key: key);
@@ -16,7 +16,7 @@ class PaginatedListView extends ConsumerWidget {
       double currentScroll = scrollController.position.pixels;
       double delta = MediaQuery.of(context).size.width * 0.20;
       if (maxScroll - currentScroll <= delta) {
-        ref.read(itemsProvider.notifier).fetchNextBatch();
+        ref.read(itemsFakeUserProvider.notifier).fetchNextBatch();
       }
     });
     return Scaffold(
@@ -26,20 +26,31 @@ class PaginatedListView extends ConsumerWidget {
       body: CustomScrollView(
         controller: scrollController,
         restorationId: "items List",
-        slivers: const [
-          SliverAppBar(
+        slivers: [
+          const SliverAppBar(
             centerTitle: true,
             pinned: true,
             title: Text('Infinite Pagination'),
           ),
-          SliverToBoxAdapter(
+          const SliverToBoxAdapter(
             child: SizedBox(
               height: 20,
             ),
           ),
-          ItemsList(),
-          NoMoreItems(),
-          OnGoingBottomWidget(),
+          UserItemsList(
+            stateNotifierProvider: itemsFakeUserProvider,
+            onTap: () {
+              ref.read(itemsFakeUserProvider.notifier).fetchFirstBatch();
+            },
+          ),
+          NoMoreItems(
+            stateNotifierProvider: itemsFakeUserProvider,
+            callback: () =>
+                ref.read(itemsFakeUserProvider.notifier).noMoreItems,
+          ),
+          OnGoingBottomWidget(
+            stateNotifierProvider: itemsFakeUserProvider,
+          ),
         ],
       ),
     );
@@ -87,18 +98,24 @@ class ScrollToTopButton extends StatelessWidget {
 }
 
 class NoMoreItems extends ConsumerWidget {
-  const NoMoreItems({Key? key}) : super(key: key);
+  final StateNotifierProvider stateNotifierProvider;
+  final bool Function() callback;
+  const NoMoreItems({
+    Key? key,
+    required this.stateNotifierProvider,
+    required this.callback,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(itemsProvider);
+    final state = ref.watch(stateNotifierProvider);
 
     return SliverToBoxAdapter(
       child: state.maybeWhen(
         orElse: () => const SizedBox.shrink(),
         data: (items) {
-          final nomoreItems = ref.read(itemsProvider.notifier).noMoreItems;
-          return nomoreItems
+          bool noMoreItems = callback();
+          return noMoreItems
               ? const Padding(
                   padding: EdgeInsets.only(bottom: 20),
                   child: Text(
@@ -113,13 +130,17 @@ class NoMoreItems extends ConsumerWidget {
   }
 }
 
-class ItemsList extends StatelessWidget {
-  const ItemsList({Key? key}) : super(key: key);
+class UserItemsList extends StatelessWidget {
+  final StateNotifierProvider stateNotifierProvider;
+  final VoidCallback onTap;
+  const UserItemsList(
+      {Key? key, required this.stateNotifierProvider, required this.onTap})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Consumer(builder: (context, ref, child) {
-      final state = ref.watch(itemsProvider);
+      final state = ref.watch(stateNotifierProvider);
       return state.when(
         data: (items) {
           return items.isEmpty
@@ -127,9 +148,7 @@ class ItemsList extends StatelessWidget {
                   child: Column(
                     children: [
                       IconButton(
-                        onPressed: () {
-                          ref.read(itemsProvider.notifier).fetchFirstBatch();
-                        },
+                        onPressed: onTap,
                         icon: const Icon(Icons.replay),
                       ),
                       const Chip(
@@ -183,7 +202,7 @@ class ItemsListBuilder extends StatelessWidget {
     required this.items,
   }) : super(key: key);
 
-  final List<Data> items;
+  final List<UserData> items;
 
   @override
   Widget build(BuildContext context) {
@@ -192,12 +211,12 @@ class ItemsListBuilder extends StatelessWidget {
         (context, index) {
           var user = items[index];
           return ListTile(
-            title: Text(user.firstName ?? ""),
+            title: Text("${user.firstName ?? ""} ${index + 1}"),
             leading: CircleAvatar(
-              backgroundImage: NetworkImage(user.avatar ?? ""),
+              backgroundImage: NetworkImage(user.picture ?? ""),
               radius: 30,
             ),
-            subtitle: Text(user.email ?? ""),
+            subtitle: Text(user.firstName ?? ""),
           );
         },
         childCount: items.length,
@@ -207,7 +226,9 @@ class ItemsListBuilder extends StatelessWidget {
 }
 
 class OnGoingBottomWidget extends StatelessWidget {
-  const OnGoingBottomWidget({Key? key}) : super(key: key);
+  final StateNotifierProvider stateNotifierProvider;
+  const OnGoingBottomWidget({Key? key, required this.stateNotifierProvider})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -215,7 +236,7 @@ class OnGoingBottomWidget extends StatelessWidget {
       padding: const EdgeInsets.all(40),
       sliver: SliverToBoxAdapter(
         child: Consumer(builder: (context, ref, child) {
-          final state = ref.watch(itemsProvider);
+          final state = ref.watch(stateNotifierProvider);
           return state.maybeWhen(
             orElse: () => const SizedBox.shrink(),
             onGoingLoading: (items) =>

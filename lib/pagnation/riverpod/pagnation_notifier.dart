@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:journal_riverpod/pagnation/core/request_pagnation_state.dart';
 import 'package:journal_riverpod/pagnation/data/repository/user_repository.dart';
+import 'package:journal_riverpod/pagnation/model/list_post_fake_model.dart';
 import 'package:journal_riverpod/pagnation/model/list_user_dummy_model.dart';
 import 'package:journal_riverpod/pagnation/model/list_user_model.dart';
 import 'package:journal_riverpod/reddit_clone/core/failure.dart';
@@ -97,6 +98,16 @@ final itemsFakeUserProvider = StateNotifierProvider<
   return PaginationNotifier(
     fetchNextItems: (page) {
       return ref.read(userRepositoryProvider).getFakeUser(page);
+    },
+    itemsPerBatch: 10,
+  )..init();
+});
+
+final itemsPostsProvider = StateNotifierProvider<PaginationNotifier<PostData>,
+    RequestPagnationState<PostData>>((ref) {
+  return PaginationNotifier(
+    fetchNextItems: (page) {
+      return ref.read(userRepositoryProvider).getFakePosts(page, 10);
     },
     itemsPerBatch: 10,
   )..init();
