@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:journal_riverpod/pagnation/core/request_pagnation_state.dart';
 import 'package:journal_riverpod/pagnation/data/repository/user_repository.dart';
+import 'package:journal_riverpod/pagnation/model/list_user_dummy_model.dart';
 import 'package:journal_riverpod/pagnation/model/list_user_model.dart';
 import 'package:journal_riverpod/reddit_clone/core/failure.dart';
 
@@ -21,7 +22,7 @@ class PaginationNotifier<T> extends StateNotifier<RequestPagnationState<T>> {
   Timer _timer = Timer(const Duration(milliseconds: 0), () {});
 
   bool noMoreItems = false;
-  int page = 1;
+  int page = 0;
   void init() {
     if (_items.isEmpty) {
       fetchFirstBatch();
@@ -88,5 +89,15 @@ final itemsProvider = StateNotifierProvider<PaginationNotifier<Data>,
     fetchNextItems: (page) {
       return ref.read(userRepositoryProvider).getUserListPagnation(page);
     },
+  )..init();
+});
+
+final itemsFakeUserProvider = StateNotifierProvider<
+    PaginationNotifier<UserData>, RequestPagnationState<UserData>>((ref) {
+  return PaginationNotifier(
+    fetchNextItems: (page) {
+      return ref.read(userRepositoryProvider).getFakeUser(page);
+    },
+    itemsPerBatch: 10,
   )..init();
 });
