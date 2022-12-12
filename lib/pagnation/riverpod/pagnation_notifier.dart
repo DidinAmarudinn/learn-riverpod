@@ -42,7 +42,6 @@ class PaginationNotifier<T> extends StateNotifier<RequestPagnationState<T>> {
   }
 
   Future<void> fetchFirstBatch() async {
-    print("object");
     try {
       state = const RequestPagnationState.loading();
       final result = await fetchNextItems(page);
